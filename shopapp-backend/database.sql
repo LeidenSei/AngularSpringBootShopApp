@@ -1,5 +1,6 @@
-Create DATABASE shopapp;
-use shopapp;
+drop DATABASE backEndJava;
+create DATABASE backEndJava;
+use backEndJava;
 
 CREATE TABLE users(
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -13,14 +14,13 @@ CREATE TABLE users(
     date_of_birth DATE,
     facebook_account_id INT DEFAULT 0,
     google_account_id INT DEFAULT 0
-)
-
+);
 ALTER TABLE users ADD COLUMN role_id int;
 
 CREATE TABLE roles(
 	id int PRIMARY KEY,
-    name varchar(20) NOT null,
-)
+    name varchar(20) NOT null
+);
 
 ALTER TABLE users ADD FOREIGN KEY (role_id) REFERENCES roles(id);
 
@@ -33,7 +33,7 @@ CREATE TABLE tokens(
     expired TINYINT(1) NOT NULL,
     user_id int,
     FOREIGN KEY (user_id) REFERENCES users(id)
-)
+);
 CREATE TABLE social_accounts(
 	id int PRIMARY KEY AUTO_INCREMENT,
     provider varchar(20) NOT null,
@@ -42,22 +42,22 @@ CREATE TABLE social_accounts(
     name varchar(100) NOT null,
     user_id int,
     FOREIGN KEY (user_id) REFERENCES users(id)
-)
+);
 CREATE TABLE catogories(
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) not null DEFAULT ''
-)
+);
 CREATE TABLE products(
 	id int PRIMARY KEY AUTO_INCREMENT,
     name varchar(350),
     price float not null CHECK (price >= 0),
    	thumbnail varchar(300) DEFAULT '',
-    description LONGTEXT DEFAULT '',
+    description LONGTEXT,
     created_at DATETIME,
     updated_at DATETIME,
     category_id int,
     FOREIGN KEY (category_id) REFERENCES catogories(id)
-)
+);
 CREATE TABLE orders(
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id int,
@@ -90,7 +90,7 @@ CREATE TABLE order_details(
     number_of_product int CHECK(number_of_product > 0),
     total_money float CHECK(total_money >=0 ),
     color varchar(20) DEFAULT ''
-)
+);
 CREATE TABLE product_images(
     id INT PRIMARY KEY AUTO_INCREMENT,
     product_id INT,
