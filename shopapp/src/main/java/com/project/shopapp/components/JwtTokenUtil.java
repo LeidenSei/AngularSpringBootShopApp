@@ -74,19 +74,18 @@ public class JwtTokenUtil {
     public String extractPhoneNumber(String token){
         return extractClaim(token, Claims::getSubject);
     }
-<<<<<<< HEAD
 
-    public boolean validatetoken(String token, UserDetails userDetails){
+
+    public boolean validatetoken(String token, UserDetails userDetails) {
         String phoneNumber = extractPhoneNumber(token);
         return (phoneNumber.equals(userDetails.getUsername()))
                 && !isTokenExpire(token);
-=======
+    }
     public boolean validateToken(String token, UserDetails userDetails){
         String phoneNumber = extractPhoneNumber(token);
         return (
                 phoneNumber.equals(userDetails.getUsername())
                 && !isTokenExpire(token)
                 );
->>>>>>> e40db5c00d31716ebaebb5b6bea9b5394f7880b6
     }
 }
