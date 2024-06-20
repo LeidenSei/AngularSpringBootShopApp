@@ -4,12 +4,15 @@ import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserLoginDTO;
 import com.project.shopapp.models.User;
 import com.project.shopapp.responses.LoginResponse;
+import com.project.shopapp.responses.RegisterResponse;
 import com.project.shopapp.services.IUserService;
 
 import com.project.shopapp.components.LocalizationUtils;
 import com.project.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -45,7 +48,9 @@ public class UserController {
                 return ResponseEntity.badRequest().body(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
             }
             User user = userService.createUser(userDTO);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(RegisterResponse.builder()
+                            .user(user).message("Created user")
+                    .build());
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
