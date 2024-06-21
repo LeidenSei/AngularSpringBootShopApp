@@ -41,6 +41,7 @@ public class WebSecurityConfig {
                                 String.format("%s/users/register", apiPrefix),
                                 String.format("%s/users/login", apiPrefix)
                         ).permitAll()
+
                         .requestMatchers(HttpMethod.GET,
                                 String.format("%s/categories**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                         .requestMatchers(HttpMethod.POST,
@@ -73,6 +74,8 @@ public class WebSecurityConfig {
                                 String.format("%s/order_details/**", apiPrefix)).hasRole(Role.ADMIN)
                         .requestMatchers(HttpMethod.DELETE,
                                 String.format("%s/order_details/**", apiPrefix)).hasRole(Role.USER)
+                        .requestMatchers(HttpMethod.GET,
+                                String.format("%s/roles**", apiPrefix)).permitAll()
                         .anyRequest().authenticated()
                 ).csrf(AbstractHttpConfigurer::disable);
         http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
