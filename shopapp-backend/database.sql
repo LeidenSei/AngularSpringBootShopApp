@@ -1,6 +1,6 @@
-drop DATABASE backEndJava;
-create DATABASE backEndJava;
-use backEndJava;
+drop DATABASE shopapp;
+create DATABASE shopapp;
+use shopapp;
 
 CREATE TABLE users(
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -99,3 +99,18 @@ CREATE TABLE product_images(
         FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE,
     image_url varchar(300)
 )
+use shopapp;
+-- Step 1: Disable safe update mode
+SET SQL_SAFE_UPDATES = 0;
+
+-- Step 2: Run the update statement
+UPDATE products
+SET thumbnail = (
+    SELECT image_url
+    FROM product_images
+    WHERE products.id = product_images.product_id
+    LIMIT 1
+);
+
+-- Step 3: Re-enable safe update mode
+SET SQL_SAFE_UPDATES = 1;

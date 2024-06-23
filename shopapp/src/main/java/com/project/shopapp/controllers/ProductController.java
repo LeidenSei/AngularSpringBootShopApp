@@ -44,7 +44,10 @@ public class ProductController {
             @RequestParam("page") int page,
             @RequestParam("limit") int limit
     ){
-        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(page, limit,
+//                Sort.by("createdAt").descending()
+                Sort.by("id").ascending()
+        );
         Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
         int totalPages = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
