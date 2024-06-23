@@ -67,7 +67,7 @@ public class OrderDetailService implements IOrderDetailService{
 
     @Override
     @Transactional
-    public void deleteOrderDetail(long id) {
+    public void deleteById(long id) {
         orderDetailRepository.deleteById(id);
     }
 
