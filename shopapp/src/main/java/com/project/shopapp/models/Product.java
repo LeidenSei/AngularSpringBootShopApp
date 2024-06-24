@@ -3,6 +3,8 @@ package com.project.shopapp.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "products")
@@ -30,4 +32,8 @@ public class Product extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany
+    @JoinColumn(name = "product_id")
+    private List<ProductImage> productImages;
 }
