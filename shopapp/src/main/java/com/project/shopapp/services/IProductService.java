@@ -10,6 +10,8 @@ import com.project.shopapp.responses.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 
 public interface IProductService {
 
@@ -26,4 +28,6 @@ public interface IProductService {
     boolean existsByName(String name);
 
     public ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws DataNotFoundException, InvalidParamException;
+
+    List<Product> findProductByIds(List<Long> productIds);
 }
