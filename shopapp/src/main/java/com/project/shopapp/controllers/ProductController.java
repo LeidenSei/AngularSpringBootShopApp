@@ -41,11 +41,13 @@ public class ProductController {
     private final LocalizationUtils localizationUtils;
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getProduct(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0",name = "category_id") Long categoryId,
             @RequestParam("page") int page,
             @RequestParam("limit") int limit
     ){
-        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("id").ascending());
-        Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
+        PageRequest pageRequest = PageRequest.of(page - 1, limit, Sort.by("id").ascending());
+        Page<ProductResponse> productPage = productService.getAllProducts(keyword,categoryId,pageRequest);
         int totalPages = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
         ProductListResponse response = ProductListResponse.builder()
