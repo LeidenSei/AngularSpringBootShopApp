@@ -40,23 +40,21 @@ public class ProductController {
     private final IProductService productService;
     private final LocalizationUtils localizationUtils;
     @GetMapping("")
-    public ResponseEntity<List<ProductListResponse>> getProduct(
+    public ResponseEntity<ProductListResponse> getProduct(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit
     ){
-        PageRequest pageRequest = PageRequest.of(page, limit,
-//                Sort.by("createdAt").descending()
-                Sort.by("id").ascending()
-        );
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("id").ascending());
         Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
         int totalPages = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
-        return ResponseEntity.ok(Collections.singletonList(ProductListResponse
-                .builder()
+        ProductListResponse response = ProductListResponse.builder()
                 .products(products)
                 .totalPages(totalPages)
-                .build()));
+                .build();
+        return ResponseEntity.ok(response);
     }
+    
 
 
 
@@ -168,10 +166,10 @@ public class ProductController {
         return contentType != null && contentType.startsWith("image/");
     }
 
-    //    @PostMapping("/generateFakeProducts")
+    @PostMapping("/generateFakeProducts")
     public ResponseEntity<String> generateFakeProducts(){
         Faker faker = new Faker();
-        for (int i = 0; i < 50; i++){
+        for (int i = 0; i < 10; i++){
             String productName = faker.commerce().productName();
             if (productService.existsByName(productName)){
                 continue;
