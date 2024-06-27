@@ -1,5 +1,6 @@
 package com.project.shopapp.controllers;
 
+import com.project.shopapp.dtos.UpdateUserDTO;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserLoginDTO;
 import com.project.shopapp.models.User;
@@ -72,12 +73,31 @@ public class UserController {
     }
 
     @PostMapping("/details")
-    public ResponseEntity<UserResponse> getUserDetails(@RequestHeader("Authorization") String token){
+    public ResponseEntity<UserResponse> getUserDetails(@RequestHeader("Authorization") String authorizationHeader){
         try {
-            String extractToken = token.substring(7);
+            String extractToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailFromToken(extractToken);
             return ResponseEntity.ok(UserResponse.fromUser(user));
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @PutMapping("/details/{userId}")
+    public ResponseEntity<UserResponse> updateUserDetails(
+            @PathVariable Long userId,
+            @RequestBody UpdateUserDTO updateUserDTO,
+            @RequestHeader("Authorization") String authorizationHeader
+    ){
+        try{
+            String extractToken = authorizationHeader.substring(7);
+            User user = userService.getUserDetailFromToken(extractToken);
+
+            if (user.getId() != userId){
+                return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            User updatedUser = userService.updateUser(userId, updateUserDTO);
+            return ResponseEntity.ok(UserResponse.fromUser(updatedUser));
+        }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
     }
