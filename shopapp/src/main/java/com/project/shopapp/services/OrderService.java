@@ -10,6 +10,8 @@ import com.project.shopapp.repositories.ProductRepository;
 import com.project.shopapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,5 +102,10 @@ public class OrderService implements IOrderService {
     @Override
     public List<Order> findByUserId(long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
+        return orderRepository.findByKeyword(keyword,pageable);
     }
 }

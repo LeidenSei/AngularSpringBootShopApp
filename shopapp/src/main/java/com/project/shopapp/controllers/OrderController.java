@@ -3,11 +3,17 @@ package com.project.shopapp.controllers;
 import com.project.shopapp.components.LocalizationUtils;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.responses.OrderListResponse;
 import com.project.shopapp.responses.OrderResponse;
 import com.project.shopapp.services.IOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -75,5 +81,20 @@ public class OrderController {
     ){
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Order deleted successfully");
+    }
+    @GetMapping("/get-orders-by-keyword")
+    public ResponseEntity<OrderListResponse> getOrdersByKeyword(
+            @RequestParam(defaultValue = "",required = false)String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ){
+        PageRequest pageRequest = PageRequest.of(page-1,limit, Sort.by("id").ascending());
+        Page<OrderResponse> orders = orderService.getOrdersByKeyword(keyword,pageRequest).map(OrderResponse::fromOrder);
+        int totalPages = orders.getTotalPages();
+        List<OrderResponse> orderResponses = orders.getContent();
+        return ResponseEntity.ok(OrderListResponse.builder()
+                        .orders(orderResponses)
+                        .totalPages(totalPages)
+                .build());
     }
 }

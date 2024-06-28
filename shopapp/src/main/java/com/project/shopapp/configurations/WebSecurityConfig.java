@@ -68,6 +68,9 @@ public class WebSecurityConfig {
                                 String.format("%s/orders/**", apiPrefix)).hasRole(Role.USER)
                         .requestMatchers(HttpMethod.GET,
                                 String.format("%s/orders/**", apiPrefix)).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                String.format("%s/orders/get-orders-by-keyword", apiPrefix))
+                                    .hasRole(Role.ADMIN)
                         .requestMatchers(HttpMethod.PUT,
                                 String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
                         .requestMatchers(HttpMethod.DELETE,
