@@ -65,29 +65,23 @@ public class UserService implements IUserService {
     }
     @Override
     @Transactional
-    public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
+    public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws DataNotFoundException {
+        // Retrieve existing user or throw an exception if not found
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
 
+        // Update phone number only if it's not null and different from the existing one
         String newPhoneNumber = updatedUserDTO.getPhoneNumber();
-        if (!existingUser.getPhoneNumber().equals(newPhoneNumber)
-                && userRepository.existsByPhoneNumber(newPhoneNumber)){
-            throw  new DataIntegrityViolationException("Phone number already exists");
+        if (newPhoneNumber != null && !existingUser.getPhoneNumber().equals(newPhoneNumber)) {
+            if (userRepository.existsByPhoneNumber(newPhoneNumber)) {
+                throw new DataIntegrityViolationException("Phone number already exists");
+            }
+            existingUser.setPhoneNumber(newPhoneNumber);
         }
 
-        existingUser.setFullName(updatedUserDTO.getFullName());
-        existingUser.setPhoneNumber(newPhoneNumber);
-        existingUser.setAddress(updatedUserDTO.getAddress());
-        existingUser.setDateOfBirth(updatedUserDTO.getDateOfBirth());
-        existingUser.setFacebookAccountId(updatedUserDTO.getFacebookAccountId());
-        existingUser.setGoogleAccountId(updatedUserDTO.getGoogleAccountId());
-//        existingUser.setRole(updatedRole);
-
+        // Update other fields only if they are not null
         if (updatedUserDTO.getFullName() != null) {
             existingUser.setFullName(updatedUserDTO.getFullName());
-        }
-        if (newPhoneNumber != null) {
-            existingUser.setPhoneNumber(newPhoneNumber);
         }
         if (updatedUserDTO.getAddress() != null) {
             existingUser.setAddress(updatedUserDTO.getAddress());
@@ -95,20 +89,25 @@ public class UserService implements IUserService {
         if (updatedUserDTO.getDateOfBirth() != null) {
             existingUser.setDateOfBirth(updatedUserDTO.getDateOfBirth());
         }
-        if (updatedUserDTO.getFacebookAccountId() > 0 ) {
+        if ( updatedUserDTO.getFacebookAccountId() > 0) {
             existingUser.setFacebookAccountId(updatedUserDTO.getFacebookAccountId());
         }
-        if (updatedUserDTO.getGoogleAccountId() > 0) {
+        if ( updatedUserDTO.getGoogleAccountId() > 0) {
             existingUser.setGoogleAccountId(updatedUserDTO.getGoogleAccountId());
         }
         if (updatedUserDTO.getPassword() != null && !updatedUserDTO.getPassword().isEmpty()) {
+            if (!updatedUserDTO.getPassword().equals(updatedUserDTO.getRetypePassword())) {
+                throw new DataNotFoundException("Password and RetypePassword not the same");
+            }
             String newPassword = updatedUserDTO.getPassword();
             String encodedPassword = passwordEncoder.encode(newPassword);
             existingUser.setPassword(encodedPassword);
         }
+
         // Save the updated user
         return userRepository.save(existingUser);
     }
+
 
 
     @Override
