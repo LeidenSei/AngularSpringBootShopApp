@@ -12,6 +12,8 @@ import com.project.shopapp.services.IProductService;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +42,7 @@ public class ProductController {
 
     private final IProductService productService;
     private final LocalizationUtils localizationUtils;
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getProduct(
             @RequestParam(defaultValue = "") String keyword,
@@ -48,6 +51,7 @@ public class ProductController {
             @RequestParam("limit") int limit
     ){
         PageRequest pageRequest = PageRequest.of(page - 1, limit, Sort.by("id").ascending());
+        logger.info(String.format("keyword = %s, category_id = %d, page = %d, limit = %d",keyword,categoryId,page,limit));
         Page<ProductResponse> productPage = productService.getAllProducts(keyword,categoryId,pageRequest);
         int totalPages = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();

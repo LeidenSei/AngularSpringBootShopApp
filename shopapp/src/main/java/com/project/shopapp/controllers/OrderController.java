@@ -85,7 +85,7 @@ public class OrderController {
     @GetMapping("/get-orders-by-keyword")
     public ResponseEntity<OrderListResponse> getOrdersByKeyword(
             @RequestParam(defaultValue = "",required = false)String keyword,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit
     ){
         PageRequest pageRequest = PageRequest.of(page-1,limit, Sort.by("id").ascending());
