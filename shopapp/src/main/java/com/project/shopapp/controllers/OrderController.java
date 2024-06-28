@@ -88,7 +88,7 @@ public class OrderController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit
     ){
-        PageRequest pageRequest = PageRequest.of(page-1,limit, Sort.by("id").ascending());
+        PageRequest pageRequest = PageRequest.of(page-1,limit, Sort.by("status").descending());
         Page<OrderResponse> orders = orderService.getOrdersByKeyword(keyword,pageRequest).map(OrderResponse::fromOrder);
         int totalPages = orders.getTotalPages();
         List<OrderResponse> orderResponses = orders.getContent();
